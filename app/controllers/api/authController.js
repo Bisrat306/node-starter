@@ -5,6 +5,10 @@ const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
 const config = require('config');
 
+const nodemailer = require("nodemailer");
+
+
+
 /**
  * @desc    Register a new user
  * @method  POST api/auth/register
@@ -49,6 +53,31 @@ const config = require('config');
 
     // Save the verification data
     await verification.save();
+
+    let verification_link="abc.comverify/"+verification.token
+
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "gmail.com",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: emailUser, // generated ethereal user
+      pass: emailPass, // generated ethereal password
+    },
+  });
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"Fred Foo 👻" <foo@example.com>', // sender address
+    to: newUser.email, // list of receivers
+    subject: "User Verifcation", // Subject line
+    text: "Hello world?", // plain text body
+    html: "<b>Hello world?</b>", // html body
+  });
+
+  console.log("Message sent: %s", info.messageId);
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
     // Send the response to server
     res.status(201).json(
@@ -223,6 +252,30 @@ const config = require('config');
 
     // Save the verification data
     await newVerification.save();
+    let verification_link="abc.comverify/"+newVerification.token
+
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "gmail.com",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: emailUser, // generated ethereal user
+      pass: emailPass, // generated ethereal password
+    },
+  });
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"Fred Foo 👻" <foo@example.com>', // sender address
+    to: newUser.email, // list of receivers
+    subject: "User Verifcation", // Subject line
+    text: "Hello world?", // plain text body
+    html: "<b>Hello world?</b>", // html body
+  });
+
+  console.log("Message sent: %s", info.messageId);
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
     // Send the response
     res
